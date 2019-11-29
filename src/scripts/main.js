@@ -127,6 +127,16 @@ bespoke.from({ parent: 'article.deck', slides: 'section' }, [
 const generateLearnCard = (img_url,title,title_en,index) => {
 	return `<div id="learn-${index}" class="image-box"><div class="title-part-learn">${title} = ${title_en}</div><img src="${img_url}" class="img-style-learn"/></div>`;
 }
+const returnToStart = () => {
+	while(LIMIT_DATA<DATA.length){
+		$(`#learn-${LIMIT_DATA}`).css('left','35%');
+		LIMIT_DATA++;
+	}
+	$('.next-btn').css('transform','scale(1)');
+	$('#yes-no').css('transform','scale(0)');
+	$('.start-overlay').css('transform','scale(1)');
+	$('.start-btn').css('transform','scale(1)');
+}
 
 //Scripts
 $(document).ready(function(){
@@ -149,5 +159,7 @@ $(document).ready(function(){
 			$(this).css('transform','scale(0)');
 			$('#yes-no').css('transform','scale(1)');
 		}
-	});
+  });
+  //No Button
+	$('.no-btn').on('click',returnToStart);
 })

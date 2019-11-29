@@ -110,6 +110,9 @@ const DATA = [
   },
 ]
 
+//Learn Data Progress
+var LIMIT_DATA = DATA.length - 1;
+
 // Bespoke.js
 bespoke.from({ parent: 'article.deck', slides: 'section' }, [
   classes(),
@@ -137,4 +140,14 @@ $(document).ready(function(){
     $('.start-overlay').css('transform','scale(0)');
     $(this).css('transform','scale(0)');
   });
+  //Next Button
+	$('.next-btn').on('click',function(){
+		let target = $(`#learn-${LIMIT_DATA}`);
+		target.css('left','-30%');
+		LIMIT_DATA -= 1;
+		if(LIMIT_DATA<0){
+			$(this).css('transform','scale(0)');
+			$('#yes-no').css('transform','scale(1)');
+		}
+	});
 })

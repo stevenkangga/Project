@@ -173,5 +173,14 @@ $(document).ready(function(){
 	let quiz_container = $('#quiz-part');
 	DATA.forEach((element,index)=>{
 		quiz_container.append(generateQuizCard(element.img_url,element.title,element.title_en));
+  })
+  //Flip Card
+	$('.flip-card-container').on('click',function(){
+		$(this).css('transform','rotateY(180deg)');
+		let hintIcon = $('.direct-img'), hintImg = $('.hint-dialog');
+		if(hintIcon.length){
+			hintIcon.remove();
+			hintImg.remove();
+		}
 	})
 })

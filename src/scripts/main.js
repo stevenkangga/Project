@@ -127,6 +127,9 @@ bespoke.from({ parent: 'article.deck', slides: 'section' }, [
 const generateLearnCard = (img_url,title,title_en,index) => {
 	return `<div id="learn-${index}" class="image-box"><div class="title-part-learn">${title} = ${title_en}</div><img src="${img_url}" class="img-style-learn"/></div>`;
 }
+const generateQuizCard = (img_url,title,title_en,index) => {
+	return `<div class="quiz-animate"><div class="flip-card-container"><div class="flip-image-box"><img src="${img_url}" class="img-style-quiz"/></div><div class="quiz-box"><div class="quiz-option-group"><div class="quiz-option"><a>A. Answer 1</a></div><div class="quiz-option">B. Answer 2</div></div><div class="quiz-option-group"><div class="quiz-option">C. Answer 3</div><div class="quiz-option">D. Answer 4</div></div></div></div></div>`;
+}
 const returnToStart = () => {
 	while(LIMIT_DATA<DATA.length){
 		$(`#learn-${LIMIT_DATA}`).css('left','35%');
@@ -160,6 +163,15 @@ $(document).ready(function(){
 			$('#yes-no').css('transform','scale(1)');
 		}
   });
+  //Yes Button
+	$('.yes-btn').on('click',function(){
+		$('#quiz-part').css('transform','scale(1)');
+	});
   //No Button
-	$('.no-btn').on('click',returnToStart);
+  $('.no-btn').on('click',returnToStart);
+  //Load Quiz Card
+	let quiz_container = $('#quiz-part');
+	DATA.forEach((element,index)=>{
+		quiz_container.append(generateQuizCard(element.img_url,element.title,element.title_en));
+	})
 })

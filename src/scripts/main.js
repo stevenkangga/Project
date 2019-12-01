@@ -5,7 +5,6 @@ var nav = require('bespoke-nav');
 var scale = require('bespoke-scale');
 var bullets = require('bespoke-bullets');
 var hash = require('bespoke-hash');
-var prism = require('bespoke-prism');
 var extern = require('bespoke-extern');
 //Other
 var current_quiz_card = null;
@@ -130,7 +129,6 @@ bespoke.from({ parent: 'article.deck', slides: 'section' }, [
 	scale(),
 	bullets('.build, .build-items > *:not(.build-items)'),
 	hash(),
-	prism(),
 	extern(bespoke)
 ]);
 //Function Helper

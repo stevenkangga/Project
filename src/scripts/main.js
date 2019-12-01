@@ -205,6 +205,21 @@ const loadUpQuiz = () => {
 		}
 	})
 }
+//Quiz Answer
+$('.quiz-option a').on('click',function(){
+    let parent = $(current_quiz_card);
+    if(!parent.hasClass('option-selected')){
+        $('.next-btn').css('transform','scale(1)');
+        let target = $(this), selectedData = target.text(), targetIndex = target.attr('resource'), mainResource = DATA[targetIndex];
+        if(selectedData===mainResource.title_en){
+            target.addClass('correct');
+            quiz_score++;
+        }else{
+            target.addClass('wrong');
+        }
+        parent.addClass('option-selected')
+    }
+})
 //Scripts
 $(document).ready(function(){
 	//Load Up Card to Learn
@@ -228,6 +243,17 @@ $(document).ready(function(){
 			if(LIMIT_DATA<0){
 				$(this).css('transform','scale(0)');
 				$('#yes-no').css('transform','scale(1)');
+			}
+		}else if(APP_CONDITION===QUIZ){
+			$(current_quiz_card).css('left','-30%');
+			$(this).css('transform','scale(0)');
+			if(QUIZ_PROGRESS<MAX_QUIZ){
+				QUIZ_PROGRESS++;
+				setQuizProgress();
+			}else{
+				$('.start-overlay').css('transform','scale(1)');
+				$('.result-dialog').css('transform','scale(1)');
+				$('#quiz-result').text(`Score kamu adalah ${quiz_score} / ${MAX_QUIZ}.`);
 			}
 		}
 	});

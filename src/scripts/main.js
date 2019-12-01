@@ -5,8 +5,16 @@ var nav = require('bespoke-nav');
 var scale = require('bespoke-scale');
 var bullets = require('bespoke-bullets');
 var hash = require('bespoke-hash');
+var prism = require('bespoke-prism');
 var extern = require('bespoke-extern');
-
+//Other
+var current_quiz_card = null;
+var quiz_score = 0;
+//App Condition
+const LEARNING = 'learning';
+const QUIZ = 'quiz';
+var APP_CONDITION = LEARNING;
+//Static Data
 const DATA = [
   {
       img_url:'images/Bear_1.jpg',
@@ -29,158 +37,209 @@ const DATA = [
       title_en:'Chicken'
   },
   {
-    img_url:'images/Clam_1.jpg',
-    title:'Kerang',
-    title_en:'Clam'
+      img_url:'images/Clam_1.jpg',
+      title:'Kerang',
+      title_en:'Clam'
   },
   {
-    img_url:'images/Deer_1.jpg',
-    title:'Rusa',
-    title_en:'Deer'
+      img_url:'images/Deer_1.jpg',
+      title:'Rusa',
+      title_en:'Deer'
   },
   {
-    img_url:'images/Dog_1.jpg',
-    title:'Anjing',
-    title_en:'Dog'
+      img_url:'images/Dog_1.jpg',
+      title:'Anjing',
+      title_en:'Dog'
   },
   {
-    img_url:'images/Dolphin_1.jpg',
-    title:'Lumba-Lumba',
-    title_en:'Dolphin'
+      img_url:'images/Dolphin_1.jpg',
+      title:'Lumba-Lumba',
+      title_en:'Dolphin'
   },
   {
-  img_url:'images/Duck_1.jpg',
-  title:'Bebek',
-  title_en:'Duck'
+      img_url:'images/Duck_1.jpg',
+      title:'Bebek',
+      title_en:'Duck'
   },
   {
-  img_url:'images/Elephant_1.jpg',
-  title:'Gajah',
-  title_en:'Elephant'
+      img_url:'images/Elephant_1.jpg',
+      title:'Gajah',
+      title_en:'Elephant'
   },
   {
-    img_url:'images/Fish_1.jpg',
-    title:'Ikan',
-    title_en:'Fish'
+      img_url:'images/Fish_1.jpg',
+      title:'Ikan',
+      title_en:'Fish'
   },
   {
-    img_url:'images/Giraffe_1.jpg',
-    title:'Jerapah',
-    title_en:'Giraffe'
+      img_url:'images/Giraffe_1.jpg',
+      title:'Jerapah',
+      title_en:'Giraffe'
   },
   {
-    img_url:'images/Horse_1.jpg',
-    title:'Kuda',
-    title_en:'Horse'
+      img_url:'images/Horse_1.jpg',
+      title:'Kuda',
+      title_en:'Horse'
   },
   {
-    img_url:'images/Jellyfish_1.jpg',
-    title:'Ubur-Ubur',
-    title_en:'Jellyfish'
+      img_url:'images/Jellyfish_1.jpg',
+      title:'Ubur-Ubur',
+      title_en:'Jellyfish'
   },
   {
-  img_url:'images/Panda_1.jpg',
-  title:'Panda',
-  title_en:'Panda'
+      img_url:'images/Panda_1.jpg',
+      title:'Panda',
+      title_en:'Panda'
   },
   {
-  img_url:'images/Rabbit_1.jpg',
-  title:'Kelinci',
-  title_en:'Rabbit'
+      img_url:'images/Rabbit_1.jpg',
+      title:'Kelinci',
+      title_en:'Rabbit'
   },
   {
-  img_url:'images/Rat_1.jpg',
-  title:'Tikus',
-  title_en:'Rat'
+      img_url:'images/Rat_1.jpg',
+      title:'Tikus',
+      title_en:'Rat'
   },
   {
-  img_url:'images/Shrimp_1.jpg',
-  title:'Udang',
-  title_en:'Shrimp'
+      img_url:'images/Shrimp_1.jpg',
+      title:'Udang',
+      title_en:'Shrimp'
   },
   {
-  img_url:'images/Tiger_1.jpg',
-  title:'Harimau',
-  title_en:'Tiger'
+      img_url:'images/Tiger_1.jpg',
+      title:'Harimau',
+      title_en:'Tiger'
   },
   {
-  img_url:'images/Zebra_1.jpg',
-  title:'Zebra',
-  title_en:'Zebra'
+      img_url:'images/Zebra_1.jpg',
+      title:'Zebra',
+      title_en:'Zebra'
   },
 ]
-
 //Learn Data Progress
 var LIMIT_DATA = DATA.length - 1;
-
+//Quiz Progress
+var QUIZ_PROGRESS = 1;
+//Max Quiz
+const MAX_QUIZ = 4;
 // Bespoke.js
 bespoke.from({ parent: 'article.deck', slides: 'section' }, [
-  classes(),
-  nav(),
-  scale(),
-  bullets('.build, .build-items > *:not(.build-items)'),
-  hash(),
-  extern(bespoke)
+	classes(),
+	nav(),
+	scale(),
+	bullets('.build, .build-items > *:not(.build-items)'),
+	hash(),
+	prism(),
+	extern(bespoke)
 ]);
-
 //Function Helper
 const generateLearnCard = (img_url,title,title_en,index) => {
 	return `<div id="learn-${index}" class="image-box"><div class="title-part-learn">${title} = ${title_en}</div><img src="${img_url}" class="img-style-learn"/></div>`;
 }
+const insertCharInString = (indexTarget,answer) => {
+	return answer.slice(0,indexTarget) + answer[indexTarget] + answer.slice(indexTarget,answer.length);
+}
+const generateOptions = (answer,mainIndex) => {
+	let currentSize = answer.length, dataToReturn = '', LOOP_LIMIT = 3, choosen = [], option_fix = [], option_shuffle = [];
+	do{
+		if(LOOP_LIMIT===3){
+			option_fix.push(answer);
+		}else{
+			let tempRandom = 0;
+			do{
+				tempRandom = (Math.random() * 100).toFixed() % currentSize;
+				if(choosen.indexOf(tempRandom)===-1){
+					choosen.push(tempRandom);
+					break;
+				}
+			}while(true);
+			option_fix.push(insertCharInString(tempRandom,answer));
+		}
+	}while(LOOP_LIMIT--);
+	option_fix.forEach((element,index)=>{
+		dataToReturn += `<div class="quiz-option"><a resource="${mainIndex}">${element}</a></div>`;
+	});
+	return dataToReturn;
+}
 const generateQuizCard = (img_url,title,title_en,index) => {
-	return `<div class="quiz-animate"><div class="flip-card-container"><div class="flip-image-box"><img src="${img_url}" class="img-style-quiz"/></div><div class="quiz-box"><div class="quiz-option-group"><div class="quiz-option"><a>A. Answer 1</a></div><div class="quiz-option">B. Answer 2</div></div><div class="quiz-option-group"><div class="quiz-option">C. Answer 3</div><div class="quiz-option">D. Answer 4</div></div></div></div></div>`;
+	return `<div class="quiz-animate">
+		<div class="flip-card-container">
+			<div class="flip-image-box">
+				<img src="${img_url}" class="img-style-quiz"/>
+			</div>
+			<div class="quiz-box">
+				${generateOptions(title_en,index)}
+			</div>
+		</div>
+	</div>`;
 }
 const returnToStart = () => {
-	while(LIMIT_DATA<DATA.length){
-		$(`#learn-${LIMIT_DATA}`).css('left','35%');
-		LIMIT_DATA++;
+	let i = 0;
+	while(i<DATA.length){
+		$(`#learn-${i}`).css('left','35%');
+		if(LIMIT_DATA<DATA.length-1){
+			LIMIT_DATA++;
+		}
+		i++;
 	}
 	$('.next-btn').css('transform','scale(1)');
 	$('#yes-no').css('transform','scale(0)');
 	$('.start-overlay').css('transform','scale(1)');
 	$('.start-btn').css('transform','scale(1)');
 }
-
+const setQuizProgress = () => {
+	$('.score-display').html(`${QUIZ_PROGRESS} / ${MAX_QUIZ}`);
+}
+const loadUpQuiz = () => {
+	let quiz_container = $('#quiz-part');
+	DATA.forEach((element,index)=>{
+		quiz_container.append(generateQuizCard(element.img_url,element.title,element.title_en,index));
+	});
+	//Flip Card
+	$('.flip-card-container').on('click',function(){
+		$(this).css('transform','rotateY(180deg)');
+		current_quiz_card = $(this).parent();
+		let hintIcon = $('.direct-img'), hintImg = $('.hint-dialog');
+		if(hintIcon.length){
+			hintIcon.css('transform','scale(0)');
+			hintImg.css('transform','scale(0)');
+		}
+	})
+}
 //Scripts
 $(document).ready(function(){
-  //Load Up Card to Learn
+	//Load Up Card to Learn
 	let learn_container = $('#learn-container');
 	DATA.forEach((element,index)=>{
 		learn_container.append(generateLearnCard(element.img_url,element.title,element.title_en,index));
 	});
-  //Start Button
-  $('.start-btn').on('click',function(){
-    $('.start-overlay').css('transform','scale(0)');
-    $(this).css('transform','scale(0)');
-  });
-  //Next Button
+	//Load Up Quiz Progress
+	setQuizProgress();
+	//Start Button
+	$('.start-btn').on('click',function(){
+		$('.start-overlay').css('transform','scale(0)');
+		$(this).css('transform','scale(0)');
+	});
+	//Next Button
 	$('.next-btn').on('click',function(){
-		let target = $(`#learn-${LIMIT_DATA}`);
-		target.css('left','-30%');
-		LIMIT_DATA -= 1;
-		if(LIMIT_DATA<0){
-			$(this).css('transform','scale(0)');
-			$('#yes-no').css('transform','scale(1)');
+		if(APP_CONDITION===LEARNING){
+			let target = $(`#learn-${LIMIT_DATA}`);
+			target.css('left','-30%');
+			LIMIT_DATA -= 1;
+			if(LIMIT_DATA<0){
+				$(this).css('transform','scale(0)');
+				$('#yes-no').css('transform','scale(1)');
+			}
 		}
-  });
-  //Yes Button
+	});
+	//Yes Button
 	$('.yes-btn').on('click',function(){
 		$('#quiz-part').css('transform','scale(1)');
+		APP_CONDITION = QUIZ;
 	});
-  //No Button
-  $('.no-btn').on('click',returnToStart);
-  //Load Quiz Card
-	let quiz_container = $('#quiz-part');
-	DATA.forEach((element,index)=>{
-		quiz_container.append(generateQuizCard(element.img_url,element.title,element.title_en));
-  })
-  //Flip Card
-	$('.flip-card-container').on('click',function(){
-		$(this).css('transform','rotateY(180deg)');
-		let hintIcon = $('.direct-img'), hintImg = $('.hint-dialog');
-		if(hintIcon.length){
-			hintIcon.remove();
-			hintImg.remove();
-		}
-	})
+	//No Button
+	$('.no-btn').on('click',returnToStart);
+	//Load Quiz Card
+	loadUpQuiz();
 })

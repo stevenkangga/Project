@@ -286,5 +286,21 @@ $(document).ready(function(){
 	//No Button
 	$('.no-btn').on('click',returnToStart);
 	//Load Quiz Card
-	loadUpQuiz();
+    loadUpQuiz();
+    //Home Button
+	$('.home-btn').on('click',function(){
+		APP_CONDITION = LEARNING;
+		quiz_score = 0;
+		current_quiz_card = null;
+		QUIZ_PROGRESS = 1;
+		returnToStart();
+		$('.result-dialog').css('transform','scale(0)');
+		$('.quiz-animate').remove();
+		$('.direct-img').css('transform','scale(1)');
+		$('.direct-img').css('transform','rotate(45deg)');
+		$('.hint-dialog').css('transform','scale(1)');
+		loadUpQuiz();
+		setQuizProgress();
+		$('#quiz-part').css('transform','scale(0)');
+	});
 })

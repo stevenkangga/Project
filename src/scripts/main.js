@@ -5,6 +5,7 @@ var nav = require('bespoke-nav');
 var scale = require('bespoke-scale');
 var bullets = require('bespoke-bullets');
 var hash = require('bespoke-hash');
+var prism = require('bespoke-prism');
 var extern = require('bespoke-extern');
 //Other
 var current_quiz_card = null;
@@ -13,115 +14,119 @@ var quiz_score = 0;
 const LEARNING = 'learning';
 const QUIZ = 'quiz';
 var APP_CONDITION = LEARNING;
+//Data type
+const HEWAN = "HEWAN";
 //Static Data
-const DATA = [
-  {
-      img_url:'images/Bear_1.jpg',
-      title:'Beruang',
-      title_en:'Bear'
-  },
-  {
-      img_url:'images/Cat_1.jpg',
-      title:'Kucing',
-      title_en:'Cat'
-  },
-  {
-      img_url:'images/Chameleon_1.jpg',
-      title:'Bunglon',
-      title_en:'Chameleon'
-  },
-  {
-      img_url:'images/Chicken_1.jpg',
-      title:'Ayam',
-      title_en:'Chicken'
-  },
-  {
-      img_url:'images/Clam_1.jpg',
-      title:'Kerang',
-      title_en:'Clam'
-  },
-  {
-      img_url:'images/Deer_1.jpg',
-      title:'Rusa',
-      title_en:'Deer'
-  },
-  {
-      img_url:'images/Dog_1.jpg',
-      title:'Anjing',
-      title_en:'Dog'
-  },
-  {
-      img_url:'images/Dolphin_1.jpg',
-      title:'Lumba-Lumba',
-      title_en:'Dolphin'
-  },
-  {
-      img_url:'images/Duck_1.jpg',
-      title:'Bebek',
-      title_en:'Duck'
-  },
-  {
-      img_url:'images/Elephant_1.jpg',
-      title:'Gajah',
-      title_en:'Elephant'
-  },
-  {
-      img_url:'images/Fish_1.jpg',
-      title:'Ikan',
-      title_en:'Fish'
-  },
-  {
-      img_url:'images/Giraffe_1.jpg',
-      title:'Jerapah',
-      title_en:'Giraffe'
-  },
-  {
-      img_url:'images/Horse_1.jpg',
-      title:'Kuda',
-      title_en:'Horse'
-  },
-  {
-      img_url:'images/Jellyfish_1.jpg',
-      title:'Ubur-Ubur',
-      title_en:'Jellyfish'
-  },
-  {
-      img_url:'images/Panda_1.jpg',
-      title:'Panda',
-      title_en:'Panda'
-  },
-  {
-      img_url:'images/Rabbit_1.jpg',
-      title:'Kelinci',
-      title_en:'Rabbit'
-  },
-  {
-      img_url:'images/Rat_1.jpg',
-      title:'Tikus',
-      title_en:'Rat'
-  },
-  {
-      img_url:'images/Shrimp_1.jpg',
-      title:'Udang',
-      title_en:'Shrimp'
-  },
-  {
-      img_url:'images/Tiger_1.jpg',
-      title:'Harimau',
-      title_en:'Tiger'
-  },
-  {
-      img_url:'images/Zebra_1.jpg',
-      title:'Zebra',
-      title_en:'Zebra'
-  },
-]
+const DATA = {
+	"HEWAN":[
+		{
+            img_url:'images/Bear_1.jpg',
+            title:'Beruang',
+            title_en:'Bear'
+        },
+        {
+            img_url:'images/Cat_1.jpg',
+            title:'Kucing',
+            title_en:'Cat'
+        },
+        {
+            img_url:'images/Chameleon_1.jpg',
+            title:'Bunglon',
+            title_en:'Chameleon'
+        },
+        {
+            img_url:'images/Chicken_1.jpg',
+            title:'Ayam',
+            title_en:'Chicken'
+        },
+        {
+            img_url:'images/Clam_1.jpg',
+            title:'Kerang',
+            title_en:'Clam'
+        },
+        {
+            img_url:'images/Deer_1.jpg',
+            title:'Rusa',
+            title_en:'Deer'
+        },
+        {
+            img_url:'images/Dog_1.jpg',
+            title:'Anjing',
+            title_en:'Dog'
+        },
+        {
+            img_url:'images/Dolphin_1.jpg',
+            title:'Lumba-Lumba',
+            title_en:'Dolphin'
+        },
+        {
+            img_url:'images/Duck_1.jpg',
+            title:'Bebek',
+            title_en:'Duck'
+        },
+        {
+            img_url:'images/Elephant_1.jpg',
+            title:'Gajah',
+            title_en:'Elephant'
+        },
+        {
+            img_url:'images/Fish_1.jpg',
+            title:'Ikan',
+            title_en:'Fish'
+        },
+        {
+            img_url:'images/Giraffe_1.jpg',
+            title:'Jerapah',
+            title_en:'Giraffe'
+        },
+        {
+            img_url:'images/Horse_1.jpg',
+            title:'Kuda',
+            title_en:'Horse'
+        },
+        {
+            img_url:'images/Jellyfish_1.jpg',
+            title:'Ubur-Ubur',
+            title_en:'Jellyfish'
+        },
+        {
+            img_url:'images/Panda_1.jpg',
+            title:'Panda',
+            title_en:'Panda'
+        },
+        {
+            img_url:'images/Rabbit_1.jpg',
+            title:'Kelinci',
+            title_en:'Rabbit'
+        },
+        {
+            img_url:'images/Rat_1.jpg',
+            title:'Tikus',
+            title_en:'Rat'
+        },
+        {
+            img_url:'images/Shrimp_1.jpg',
+            title:'Udang',
+            title_en:'Shrimp'
+        },
+        {
+            img_url:'images/Tiger_1.jpg',
+            title:'Harimau',
+            title_en:'Tiger'
+        },
+        {
+            img_url:'images/Zebra_1.jpg',
+            title:'Zebra',
+            title_en:'Zebra'
+        },
+	]
+}
 //Learn Data Progress
-var LIMIT_DATA = DATA.length - 1;
+var LIMIT_DATA = DATA[HEWAN].length - 1;
 //Quiz Progress
 var QUIZ_PROGRESS = 1;
 //Max Quiz
-const MAX_QUIZ = 4;
+const MAX_QUIZ = DATA[HEWAN].length;
 // Bespoke.js
 bespoke.from({ parent: 'article.deck', slides: 'section' }, [
 	classes(),
@@ -129,6 +134,7 @@ bespoke.from({ parent: 'article.deck', slides: 'section' }, [
 	scale(),
 	bullets('.build, .build-items > *:not(.build-items)'),
 	hash(),
+	prism(),
 	extern(bespoke)
 ]);
 //Function Helper
@@ -137,6 +143,18 @@ const generateLearnCard = (img_url,title,title_en,index) => {
 }
 const insertCharInString = (indexTarget,answer) => {
 	return answer.slice(0,indexTarget) + answer[indexTarget] + answer.slice(indexTarget,answer.length);
+}
+//Shuffle Array
+const shuffleArray = (arr) => {
+	let dataToReturn = [], choosen = [];
+	do{
+		let tempRandom = (Math.random() * 100).toFixed() % 4;
+		if(choosen.indexOf(tempRandom)===-1){
+			choosen.push(tempRandom);
+			dataToReturn.push(arr[tempRandom]);
+		}
+	}while(dataToReturn.length!==4);
+	return dataToReturn;
 }
 const generateOptions = (answer,mainIndex) => {
 	let currentSize = answer.length, dataToReturn = '', LOOP_LIMIT = 3, choosen = [], option_fix = [], option_shuffle = [];
@@ -155,7 +173,8 @@ const generateOptions = (answer,mainIndex) => {
 			option_fix.push(insertCharInString(tempRandom,answer));
 		}
 	}while(LOOP_LIMIT--);
-	option_fix.forEach((element,index)=>{
+	option_shuffle = shuffleArray(option_fix);
+	option_shuffle.forEach((element,index)=>{
 		dataToReturn += `<div class="quiz-option"><a resource="${mainIndex}">${element}</a></div>`;
 	});
 	return dataToReturn;
@@ -174,9 +193,9 @@ const generateQuizCard = (img_url,title,title_en,index) => {
 }
 const returnToStart = () => {
 	let i = 0;
-	while(i<DATA.length){
+	while(i<DATA[HEWAN].length){
 		$(`#learn-${i}`).css('left','35%');
-		if(LIMIT_DATA<DATA.length-1){
+		if(LIMIT_DATA<DATA[HEWAN].length-1){
 			LIMIT_DATA++;
 		}
 		i++;
@@ -191,7 +210,7 @@ const setQuizProgress = () => {
 }
 const loadUpQuiz = () => {
 	let quiz_container = $('#quiz-part');
-	DATA.forEach((element,index)=>{
+	DATA[HEWAN].forEach((element,index)=>{
 		quiz_container.append(generateQuizCard(element.img_url,element.title,element.title_en,index));
 	});
 	//Flip Card
@@ -204,27 +223,29 @@ const loadUpQuiz = () => {
 			hintImg.css('transform','scale(0)');
 		}
 	})
+	//Quiz Answer
+	$('.quiz-option a').on('click',function(){
+		let parent = $(current_quiz_card);
+		if(!parent.hasClass('option-selected')){
+			$('.next-btn').css('transform','scale(1)');
+			let target = $(this), selectedData = target.text(), targetIndex = target.attr('resource'), mainResource = DATA[HEWAN][targetIndex];
+			if(selectedData===mainResource.title_en){
+				target.addClass('correct');
+				quiz_score++;
+				$('.true-icon').css('transform','scale(1)');
+			}else{
+				target.addClass('wrong');
+				$('.false-icon').css('transform','scale(1)');
+			}
+			parent.addClass('option-selected')
+		}
+	})
 }
-//Quiz Answer
-$('.quiz-option a').on('click',function(){
-    let parent = $(current_quiz_card);
-    if(!parent.hasClass('option-selected')){
-        $('.next-btn').css('transform','scale(1)');
-        let target = $(this), selectedData = target.text(), targetIndex = target.attr('resource'), mainResource = DATA[targetIndex];
-        if(selectedData===mainResource.title_en){
-            target.addClass('correct');
-            quiz_score++;
-        }else{
-            target.addClass('wrong');
-        }
-        parent.addClass('option-selected')
-    }
-})
 //Scripts
 $(document).ready(function(){
 	//Load Up Card to Learn
 	let learn_container = $('#learn-container');
-	DATA.forEach((element,index)=>{
+	DATA[HEWAN].forEach((element,index)=>{
 		learn_container.append(generateLearnCard(element.img_url,element.title,element.title_en,index));
 	});
 	//Load Up Quiz Progress
@@ -247,6 +268,8 @@ $(document).ready(function(){
 		}else if(APP_CONDITION===QUIZ){
 			$(current_quiz_card).css('left','-30%');
 			$(this).css('transform','scale(0)');
+			$('.true-icon').css('transform','scale(0)');
+			$('.false-icon').css('transform','scale(0)');
 			if(QUIZ_PROGRESS<MAX_QUIZ){
 				QUIZ_PROGRESS++;
 				setQuizProgress();

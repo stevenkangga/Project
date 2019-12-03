@@ -6,6 +6,7 @@ var scale = require('bespoke-scale');
 var bullets = require('bespoke-bullets');
 var hash = require('bespoke-hash');
 var extern = require('bespoke-extern');
+var cube = require('bespoke-theme-cube');
 //Other
 var current_quiz_card = null;
 var quiz_score = 0;
@@ -128,6 +129,7 @@ var QUIZ_PROGRESS = 1;
 const MAX_QUIZ = DATA[HEWAN].length;
 // Bespoke.js
 bespoke.from({ parent: 'article.deck', slides: 'section' }, [
+	cube(),
 	classes(),
 	nav(),
 	scale(),

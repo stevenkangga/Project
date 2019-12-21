@@ -436,6 +436,7 @@ const initialApp = (target) => {
 	loadUpQuiz();
 	//Load Up Quiz Progress
 	setQuizProgress();
+	$('.detail-text').text(`Wahh hebat! Kamu sudah menyelesaikan bab "${CURRENT_QUESTION_TYPE===HEWAN?'Animals':'Fruits'}". Mau mencoba menyelesaikan quiz?`)
 }
 //Scripts
 $(document).ready(function(){
